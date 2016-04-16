@@ -4,10 +4,8 @@
     <meta charset="utf-8">
     <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>API Reference</title>
+    <title>Developer Guide</title>
 
-    <link href="stylesheets/screen.css" rel="stylesheet" media="screen" />
-    <link href="stylesheets/print.css" rel="stylesheet" media="print" />
     <style>
       .highlight table td { padding: 5px; }
 .highlight table pre { margin: 0; }
@@ -88,10 +86,12 @@
   color: #90a959;
 }
     </style>
+    <link href="stylesheets/screen.css" rel="stylesheet" media="screen" />
+    <link href="stylesheets/print.css" rel="stylesheet" media="print" />
       <script src="javascripts/all.js"></script>
   </head>
 
-  <body class="index" data-languages="[&quot;shell&quot;,&quot;ruby&quot;,&quot;python&quot;]">
+  <body class="index" data-languages="[&quot;javascript&quot;]">
     <a href="#" id="nav-button">
       <span>
         NAV
@@ -101,9 +101,7 @@
     <div class="tocify-wrapper">
       <img src="images/logo.png" />
         <div class="lang-selector">
-              <a href="#" data-language-name="shell">shell</a>
-              <a href="#" data-language-name="ruby">ruby</a>
-              <a href="#" data-language-name="python">python</a>
+              <a href="#" data-language-name="javascript">javascript</a>
         </div>
         <div class="search">
           <input type="text" class="search" id="input-search" placeholder="Search">
@@ -112,7 +110,7 @@
       <div id="toc">
       </div>
         <ul class="toc-footer">
-            <li><a href='#'>Sign Up for a Developer Key</a></li>
+            <li><a href='http://www.deep.bi/'>Sign Up for a DeepBI account</a></li>
             <li><a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a></li>
         </ul>
     </div>
@@ -121,226 +119,937 @@
       <div class="content">
         <h1 id="introduction">Introduction</h1>
 
-<p>Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.</p>
+<p>The Deep Media Analytics (DMA) is a part of the Deep.BI platform. It allows to track users’ interactions with web content using JavaScript snippets or REST API. </p>
 
-<p>We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.</p>
+<p>Deep Media Analytics supports:</p>
 
-<p>This example API documentation page was created with <a href="https://github.com/tripit/slate">Slate</a>. Feel free to edit it and use it as a base for your own API&rsquo;s documentation.</p>
+<ul>
+<li>web events,</li>
+<li>mobile events,</li>
+<li>HTML native video players,</li>
+<li>HTML native audio players,</li>
+<li>any other data send via REST API in JSON format.</li>
+</ul>
 
-<h1 id="authentication">Authentication</h1>
+<p>The goal of this document is to assist the developer responsible for integration of Deep.BI. This document describes integration with JavaScript, but integration can be done with REST API. </p>
 
-<blockquote>
-<p>To authorize, use this code:</p>
-</blockquote>
-<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
+<p>The DMA JavaScript code is fully asynchronous in order to not slow down publisher’s site. Once loaded, DMA code works like most other analytics services — it triggers the loading of a beacon image, which returns a 1x1 pixel image.</p>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight python"><code><span class="kn">import</span> <span class="nn">kittn</span>
+<h1 id="quick-start-guide">Quick Start Guide</h1>
 
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight shell"><code><span class="c"># With shell, you can just pass the correct header with each request</span>
-curl <span class="s2">"api_endpoint_here"</span>
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
-</code></pre>
+<h2 id="implementation">Implementation</h2>
 
 <blockquote>
-<p>Make sure to replace <code class="prettyprint">meowmeowmeow</code> with your API key.</p>
+<p>To implement DMA tracking script, past this code into head section:</p>
 </blockquote>
+<pre class="highlight javascript"><code><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span><span class="c1">//&lt;![CDATA[</span>
+<span class="cm">/* Deep Media Analytics (c) 2016-04-15 v1.2.0 */</span>
+<span class="o">!</span><span class="kd">function</span><span class="p">(){</span><span class="kd">function</span> <span class="nx">b</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">){</span><span class="s2">"function"</span><span class="o">!=</span><span class="k">typeof</span> <span class="nx">f</span><span class="p">[</span><span class="nx">a</span><span class="p">]</span><span class="o">&amp;&amp;</span><span class="p">(</span><span class="nx">f</span><span class="p">[</span><span class="nx">a</span><span class="p">]</span><span class="o">=</span><span class="nx">b</span><span class="p">)}</span><span class="kd">function</span> <span class="nx">e</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span><span class="nx">d</span><span class="p">,</span><span class="nx">e</span><span class="p">,</span><span class="nx">f</span><span class="p">,</span><span class="nx">a</span><span class="p">){</span><span class="kd">var</span> <span class="nx">b</span><span class="o">=</span><span class="kd">function</span><span class="p">(</span><span class="nx">b</span><span class="p">){</span><span class="nb">Object</span><span class="p">.</span><span class="nx">freeze</span><span class="o">&amp;&amp;</span><span class="nx">freeze</span><span class="p">(</span><span class="nx">b</span><span class="p">);</span><span class="kd">var</span> <span class="nx">j</span><span class="o">=</span><span class="nx">e</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">b</span><span class="p">),</span><span class="nx">h</span><span class="o">=</span><span class="nx">g</span><span class="p">[</span><span class="nx">f</span><span class="p">];</span><span class="k">if</span><span class="p">(</span><span class="nx">h</span><span class="p">)</span><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">i</span><span class="o">&lt;</span><span class="nx">h</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="o">++</span><span class="nx">i</span><span class="p">)</span><span class="nx">h</span><span class="p">[</span><span class="nx">i</span><span class="p">](</span><span class="nx">d</span><span class="p">,</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span><span class="nx">j</span><span class="p">);</span><span class="k">return</span> <span class="nx">a</span><span class="p">};</span><span class="k">return</span> <span class="nx">a</span><span class="o">||</span><span class="p">(</span><span class="nx">a</span><span class="o">=</span><span class="nx">b</span><span class="p">),</span><span class="nx">b</span><span class="p">}</span><span class="kd">function</span> <span class="nx">n</span><span class="p">(</span><span class="nx">d</span><span class="p">){</span><span class="kd">var</span> <span class="nx">c</span><span class="p">,</span><span class="nx">b</span><span class="o">=</span><span class="nx">a</span><span class="p">[</span><span class="nx">l</span><span class="p">](</span><span class="s2">"script"</span><span class="p">);</span><span class="k">for</span><span class="p">(</span><span class="nx">b</span><span class="p">.</span><span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="p">,</span><span class="nx">b</span><span class="p">.</span><span class="nx">async</span><span class="o">=!</span><span class="mi">0</span><span class="p">,</span><span class="nx">b</span><span class="p">.</span><span class="nx">src</span><span class="o">=</span><span class="s2">"http"</span><span class="o">+</span><span class="p">(</span><span class="s2">"https:"</span><span class="o">===</span><span class="nx">a</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">protocol</span><span class="p">?</span><span class="s2">"s:"</span><span class="p">:</span><span class="s2">":"</span><span class="p">)</span><span class="o">+</span><span class="nx">d</span><span class="p">;</span><span class="o">!</span><span class="p">(</span><span class="nx">c</span><span class="o">=</span><span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="p">](</span><span class="nx">h</span><span class="p">)[</span><span class="mi">0</span><span class="p">]);)</span><span class="nx">a</span><span class="p">[</span><span class="nx">i</span><span class="p">](</span><span class="s2">"html"</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="nx">k</span><span class="p">](</span><span class="nx">a</span><span class="p">[</span><span class="nx">l</span><span class="p">](</span><span class="nx">h</span><span class="p">));</span><span class="nx">c</span><span class="p">[</span><span class="nx">k</span><span class="p">](</span><span class="nx">b</span><span class="p">)}</span><span class="kd">var</span> <span class="nx">a</span><span class="p">,</span><span class="nx">m</span><span class="o">=</span><span class="k">new</span> <span class="nb">Date</span><span class="p">,</span><span class="nx">j</span><span class="o">=</span><span class="k">new</span> <span class="nb">Function</span><span class="p">(</span><span class="s2">"return this;"</span><span class="p">)(),</span><span class="nx">c</span><span class="o">=</span><span class="nx">j</span><span class="p">.</span><span class="nx">top</span><span class="p">;</span><span class="k">try</span><span class="p">{</span><span class="nx">a</span><span class="o">=</span><span class="nx">c</span><span class="p">.</span><span class="nb">document</span><span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">o</span><span class="p">){}</span><span class="k">void</span> <span class="mi">0</span><span class="o">===</span><span class="nx">a</span><span class="o">&amp;&amp;</span><span class="p">(</span><span class="nx">c</span><span class="o">=</span><span class="nx">j</span><span class="p">,</span><span class="nx">a</span><span class="o">=</span><span class="nx">c</span><span class="p">.</span><span class="nb">document</span><span class="p">);</span><span class="kd">var</span> <span class="nx">f</span><span class="o">=</span><span class="nx">c</span><span class="p">.</span><span class="nx">DeepTrack</span><span class="o">||</span><span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">DeepTrack</span><span class="o">=</span><span class="p">{}),</span><span class="nx">d</span><span class="o">=</span><span class="p">{},</span><span class="nx">g</span><span class="o">=</span><span class="p">{};</span><span class="nx">b</span><span class="p">(</span><span class="s2">"hash"</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">){</span><span class="kd">function</span> <span class="nx">hash</span><span class="p">(){</span><span class="k">return</span> <span class="nx">a</span><span class="p">}</span><span class="k">return</span> <span class="nx">hash</span><span class="p">}),</span><span class="nx">b</span><span class="p">(</span><span class="s2">"each"</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span><span class="nx">a</span><span class="p">){</span><span class="nx">a</span><span class="o">||</span><span class="p">(</span><span class="nx">a</span><span class="o">=</span><span class="mi">1</span><span class="p">);</span><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">e</span> <span class="k">in</span> <span class="nx">d</span><span class="p">)</span><span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">f</span><span class="o">=</span><span class="nx">d</span><span class="p">[</span><span class="nx">e</span><span class="p">],</span><span class="nx">h</span><span class="o">=</span><span class="nx">f</span><span class="p">[</span><span class="nx">a</span><span class="p">],</span><span class="nx">i</span><span class="o">=</span><span class="nx">f</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span><span class="nx">b</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="nx">b</span><span class="o">&lt;</span><span class="nx">h</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span><span class="o">++</span><span class="nx">b</span><span class="p">)</span><span class="nx">c</span><span class="p">(</span><span class="nx">e</span><span class="p">,</span><span class="nx">h</span><span class="p">[</span><span class="nx">b</span><span class="p">],</span><span class="nx">i</span><span class="p">,</span><span class="nx">b</span><span class="p">);</span><span class="kd">var</span> <span class="nx">j</span><span class="o">=</span><span class="nx">g</span><span class="p">[</span><span class="nx">a</span><span class="p">]</span><span class="o">||</span><span class="p">(</span><span class="nx">g</span><span class="p">[</span><span class="nx">a</span><span class="p">]</span><span class="o">=</span><span class="p">[]);</span><span class="nx">j</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">c</span><span class="p">)}),</span><span class="nx">b</span><span class="p">(</span><span class="s2">"getInitTime"</span><span class="p">,</span><span class="kd">function</span><span class="p">(){</span><span class="k">return</span> <span class="nx">m</span><span class="p">}),</span><span class="nx">b</span><span class="p">(</span><span class="s2">"options"</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">a</span><span class="p">){</span><span class="k">return</span> <span class="nx">d</span><span class="p">[</span><span class="nx">a</span><span class="p">][</span><span class="mi">0</span><span class="p">].</span><span class="nx">options</span><span class="p">}),</span><span class="nx">b</span><span class="p">(</span><span class="s2">"track"</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span><span class="nx">g</span><span class="p">){</span><span class="kd">var</span> <span class="nx">a</span><span class="p">,</span><span class="nx">h</span><span class="p">,</span><span class="nx">i</span><span class="p">,</span><span class="nx">j</span><span class="p">,</span><span class="nx">k</span><span class="p">,</span><span class="nx">b</span><span class="o">=</span><span class="nx">d</span><span class="p">[</span><span class="nx">c</span><span class="p">];</span><span class="k">return</span> <span class="nx">b</span><span class="p">?(</span><span class="nx">a</span><span class="o">=</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nx">g</span><span class="o">&amp;&amp;</span><span class="p">(</span><span class="nx">b</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">=</span><span class="nx">g</span><span class="p">)):(</span><span class="nx">d</span><span class="p">[</span><span class="nx">c</span><span class="p">]</span><span class="o">=</span><span class="nx">b</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="nx">h</span><span class="o">=</span><span class="p">[],</span><span class="nx">i</span><span class="o">=</span><span class="p">[],</span><span class="nx">j</span><span class="o">=</span><span class="p">[],</span><span class="nx">k</span><span class="o">=</span><span class="p">[],</span><span class="nx">g</span><span class="p">],</span><span class="nx">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="nx">a</span><span class="o">=</span><span class="nx">e</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">,</span><span class="nx">h</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span><span class="nx">a</span><span class="p">.</span><span class="nx">event</span><span class="o">=</span><span class="nx">e</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">,</span><span class="nx">i</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="nx">a</span><span class="p">),</span><span class="nx">a</span><span class="p">.</span><span class="nx">transform</span><span class="o">=</span><span class="nx">e</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">,</span><span class="nx">j</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="nx">a</span><span class="p">),</span><span class="nx">a</span><span class="p">.</span><span class="nx">newpage</span><span class="o">=</span><span class="nx">e</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">,</span><span class="nx">k</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="nx">a</span><span class="p">),</span><span class="nx">a</span><span class="p">.</span><span class="nx">hash</span><span class="o">=</span><span class="nx">f</span><span class="p">.</span><span class="nx">hash</span><span class="p">,</span><span class="nx">a</span><span class="p">.</span><span class="nx">options</span><span class="o">=</span><span class="p">{}),</span><span class="nx">a</span><span class="p">});</span><span class="kd">var</span> <span class="nx">l</span><span class="o">=</span><span class="s2">"createElement"</span><span class="p">,</span><span class="nx">i</span><span class="o">=</span><span class="s2">"getElementsByTagName"</span><span class="p">,</span><span class="nx">k</span><span class="o">=</span><span class="s2">"appendChild"</span><span class="p">,</span><span class="nx">h</span><span class="o">=</span><span class="s2">"head"</span><span class="p">;</span><span class="nx">n</span><span class="p">(</span><span class="s2">"//api.deep.bi/scripts/v1/track.js"</span><span class="p">)}();</span><span class="c1">//]]&gt;</span>
+<span class="o">&lt;</span><span class="sr">/script&gt;</span><span class="err">)
+</span></code></pre>
 
-<p>Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our <a href="http://example.com/developers">developer portal</a>.</p>
+<p>Installing DMA JavaScript code should be as easy as pasting this snippet inside the <code class="prettyprint">&lt;head&gt;</code> tag, preferably right after the opening:</p>
 
-<p>Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:</p>
+<h2 id="authorization">Authorization</h2>
 
-<p><code class="prettyprint">Authorization: meowmeowmeow</code></p>
+<p>To send data you need to obtain two authorization keys:</p>
+
+<ul>
+<li>Stream ID</li>
+<li>Write Key</li>
+</ul>
+
+<p>You can set a global variable containing your authorization keys or send them every time you send data. </p>
+
+<p>For the first option put an authorization snippet below the main loading script.</p>
+<pre class="highlight javascript"><code><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+<span class="kd">var</span> <span class="nx">deep</span> <span class="o">=</span> <span class="nx">DeepTrack</span><span class="p">.</span><span class="nx">track</span><span class="p">(</span><span class="s2">"YOUR_STREAM_KEY"</span><span class="p">,</span> <span class="s2">"YOUR_WRITE_KEY"</span><span class="p">);</span>
+<span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span></code></pre>
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>YOUR_STREAM_KEY</code> and <code>YOUR_WRITE_KEY_KEY</code> with your account credentials.
 </aside>
 
-<h1 id="kittens">Kittens</h1>
+<h2 id="sending-data">Sending data</h2>
 
-<h2 id="get-all-kittens">Get All Kittens</h2>
-<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
+<p>To start collecting data put the following script in the place where it should be fired:</p>
 
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">get</span>
+<p>In most cases it can be anywhere in the <body> section of a page. The script will gather automatically pre-defined type of events - see Section 3.</p>
+
+<p>If you’d like to gather other events you should put additional, custom lines of the script in a place where these events occur adding to it some custom parameters. For more details see Section 5.</p>
+<pre class="highlight javascript"><code><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
+<span class="nx">deep</span><span class="p">({});</span>
+<span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span></code></pre>
+
+          <h1 id="advanced-integration-guide">Advanced Integration Guide</h1>
+
+<h2 id="tracking-custom-events">Tracking Custom Events</h2>
+
+<p>DMA allows you to add custom attributes to automatically collected events or collect your own events with their custom attributes.
+Examples of custom events:</p>
+
+<ul>
+<li>preloading ad</li>
+<li>watching ad</li>
+<li>skipping ad</li>
+<li>placing order</li>
+<li>sign up</li>
+</ul>
+
+<p>Examples of custom dimensions (attributes):</p>
+
+<ul>
+<li>video title</li>
+<li>video author</li>
+<li>video tags</li>
+<li>user id</li>
+<li>user email</li>
+<li>order id</li>
+<li>product name</li>
+<li>product price</li>
+</ul>
+
+<h3 id="adding-custom-attributes-to-automatically-collected-events">Adding custom attributes to automatically collected events</h3>
+
+<blockquote>
+<p>Example: Add custom dimensions (attributes) to all video events</p>
+</blockquote>
+<pre class="highlight html"><code><span class="nt">&lt;video</span>
+    <span class="na">data-title=</span><span class="s">"Rick Astley"</span>
+    <span class="na">data-author=</span><span class="s">"Never Gonna Give You Up"</span>
+    <span class="na">data-tags=</span><span class="s">"musicvideo pop youtube redhead baddancing"</span>
+    <span class="na">width=</span><span class="s">"640"</span> <span class="na">height=</span><span class="s">"360"</span> <span class="na">autoplay</span> <span class="na">controls</span> <span class="na">loop</span>
+  <span class="na">src=</span><span class="s">"http://web.advertine.com/video/Rick_Astley_Never_Gonna_Give_You_Up_medium.mp4"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/video&gt;</span>
 </code></pre>
-<pre class="highlight python"><code><span class="kn">import</span> <span class="nn">kittn</span>
 
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="o">.</span><span class="n">kittens</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-</code></pre>
-<pre class="highlight shell"><code>curl <span class="s2">"http://example.com/api/kittens"</span>
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
+<p>If the DMA main script is loaded you can easily add custom attributes to automatically collected events. To create your own attribute follow this schema:</p>
+
+<p><code class="prettyprint">data-yourcustomattribute=&quot;your custom data&quot;</code></p>
+
+<p>DMA will automatically replace “data-” part with an appropriate context. For example, if you place your custom attribute inside <code class="prettyprint">&lt;video&gt;</code> tag DMA will recognize the video context and your data will look like this:</p>
+
+<p><code class="prettyprint">video.yourcustomattribute=&quot;your custom data&quot;</code></p>
+
+<aside class="notice">
+Please remember, that the custom attribute will be added to all automatically collected events in the context where the attribute is present.
+</aside>
+
+<h2 id="collecting-custom-events-with-custom-attributes">Collecting custom events with custom attributes</h2>
+
+<blockquote>
+<p>Example: Register an event when an ad has been watched</p>
+</blockquote>
+<pre class="highlight javascript"><code><span class="nx">deep</span><span class="p">.</span><span class="nx">event</span><span class="p">({</span><span class="s2">"event.type"</span><span class="p">:</span> <span class="s2">"ad-watched"</span><span class="p">});</span>
 </code></pre>
 
 <blockquote>
-<p>The above command returns JSON structured like this:</p>
+<p>Example: Register user sign up event</p>
 </blockquote>
-<pre class="highlight json"><code><span class="p">[</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Fluffums"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"calico"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">]</span><span class="w">
-</span></code></pre>
+<pre class="highlight javascript"><code><span class="nx">deep</span><span class="p">.</span><span class="nx">event</span><span class="p">({</span><span class="s2">"event.type"</span><span class="p">:</span> <span class="s2">"signup"</span><span class="p">,</span> <span class="s2">"user.id.email"</span><span class="p">:</span> <span class="s2">"john.doe@yahoo.com"</span><span class="p">}}});</span>
 
-<p>This endpoint retrieves all kittens.</p>
+<span class="o">&gt;</span> <span class="nx">OR</span>
 
-<h3 id="http-request">HTTP Request</h3>
-
-<p><code class="prettyprint">GET http://example.com/api/kittens</code></p>
-
-<h3 id="query-parameters">Query Parameters</h3>
-
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Default</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>include_cats</td>
-<td>false</td>
-<td>If set to true, the result will also include cats.</td>
-</tr>
-<tr>
-<td>available</td>
-<td>true</td>
-<td>If set to false, the result will include kittens that have already been adopted.</td>
-</tr>
-</tbody></table>
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-<h2 id="get-a-specific-kitten">Get a Specific Kitten</h2>
-<pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'kittn'</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="no">Kittn</span><span class="o">::</span><span class="no">APIClient</span><span class="p">.</span><span class="nf">authorize!</span><span class="p">(</span><span class="s1">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="p">.</span><span class="nf">kittens</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight python"><code><span class="kn">import</span> <span class="nn">kittn</span>
-
-<span class="n">api</span> <span class="o">=</span> <span class="n">kittn</span><span class="o">.</span><span class="n">authorize</span><span class="p">(</span><span class="s">'meowmeowmeow'</span><span class="p">)</span>
-<span class="n">api</span><span class="o">.</span><span class="n">kittens</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-</code></pre>
-<pre class="highlight shell"><code>curl <span class="s2">"http://example.com/api/kittens/2"</span>
-  -H <span class="s2">"Authorization: meowmeowmeow"</span>
+<span class="nx">deep</span><span class="p">.</span><span class="nx">event</span><span class="p">({</span><span class="na">event</span><span class="p">:</span> <span class="p">{</span><span class="na">type</span><span class="p">:</span> <span class="s2">"signup"</span><span class="p">},</span> <span class="na">user</span><span class="p">:</span> <span class="p">{</span><span class="na">id</span><span class="p">:</span> <span class="p">{</span><span class="na">email</span><span class="p">:</span> <span class="s2">"john.doe@yahoo.com"</span><span class="p">}}});</span>
 </code></pre>
 
 <blockquote>
-<p>The above command returns JSON structured like this:</p>
+<p>Example result:</p>
 </blockquote>
-<pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Max"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"breed"</span><span class="p">:</span><span class="w"> </span><span class="s2">"unknown"</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"fluffiness"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
-  </span><span class="nt">"cuteness"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
+<pre class="highlight plaintext"><code>event.type: "signup"
+event.timestamp: exact time of an event
+user.id.email: "john.doe@yahoo.com"
+</code></pre>
 
-<p>This endpoint retrieves a specific kitten.</p>
+<blockquote>
+<p>Example: Register leaving a comment by registered user event</p>
+</blockquote>
+<pre class="highlight javascript"><code><span class="nx">deep</span><span class="p">.</span><span class="nx">event</span><span class="p">({</span>
+    <span class="s2">"event.type"</span><span class="p">:</span> <span class="s2">"user-comment-added"</span><span class="p">,</span>
+    <span class="na">userComment</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">from</span><span class="p">:</span> <span class="nx">deep</span><span class="p">.</span><span class="nx">hash</span><span class="p">(</span><span class="s2">"some.user@mail.com"</span><span class="p">),</span>
+    <span class="na">inReplyTo</span><span class="p">:</span> <span class="nx">deep</span><span class="p">.</span><span class="nx">hash</span><span class="p">(</span><span class="s2">"other.user@mail.com"</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
 
-<aside class="warning">Inside HTML code blocks like this one, you can&rsquo;t use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+<p>Deep Media Analytics also allows you to collect custom events with custom attributes. To trigger DMA to register an event you can use previously defined global function deep (see Chapter 2). It takes as a parameter your data in JSON format. </p>
 
-<h3 id="http-request">HTTP Request</h3>
+<p>As a result you’ll see in your analytics this data:</p>
 
-<p><code class="prettyprint">GET http://example.com/kittens/&lt;ID&gt;</code></p>
+<p><code class="prettyprint">
+event.type: &quot;ad-watched&quot;
+event.timestamp: exact time of an event
+</code></p>
 
-<h3 id="url-parameters">URL Parameters</h3>
+<p>As a result you’ll see in your analytics this data:</p>
 
-<table><thead>
-<tr>
-<th>Parameter</th>
-<th>Description</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>ID</td>
-<td>The ID of the kitten to retrieve</td>
-</tr>
-</tbody></table>
+<p>If event.type property is not specified it defaults to “custom-event”.</p>
 
-          <h1 id="errors">Errors</h1>
+<h2 id="custom-server-side-transformations">Custom server-side transformations</h2>
+<pre class="highlight javascript"><code>    <span class="kd">var</span> <span class="nx">published</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">33</span><span class="p">);</span>
+    <span class="nx">deep</span><span class="p">({</span><span class="s2">"published.date"</span><span class="p">:</span> <span class="nx">published</span><span class="p">}});</span>
+    <span class="nx">deep</span><span class="p">.</span><span class="nx">transform</span><span class="p">({</span><span class="na">dateSplit</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">fromField</span><span class="p">:</span> <span class="s2">"published.date"</span><span class="p">,</span>
+    <span class="na">toField</span><span class="p">:</span> <span class="s2">"published"</span><span class="p">,</span>
+    <span class="na">mode</span><span class="p">:</span> <span class="s2">"merge"</span><span class="p">}</span>
+    <span class="p">});</span>
+</code></pre>
 
-<aside class="notice">This error section is stored in a separate file in `includes/_errors.md`. Slate allows you to optionally separate out your docs into many files&hellip;just save them to the `includes` folder and add them to the top of your `index.md`&rsquo;s frontmatter. Files are included in the order listed.</aside>
+<blockquote>
+<p>As a result you’ll see in your analytics this data:</p>
+</blockquote>
+<pre class="highlight plaintext"><code>    published.date: "2016-04-12T21:31:33.000Z"
+    published.year: 2016
+    published.month: April
+    published.monthno: 4
+    published.day: 12
+    published.hour: 21
+    published.minute: 31
+    published.second: 33
+    published.weekday: “Mon”
+    published.weekdayno: 1
+    published.utcoffset: 0
+</code></pre>
 
-<p>The Kittn API uses the following error codes:</p>
+<p>Deep Media Analytics also allows you to specify custom transformations (see Transformation API Documentation).</p>
 
-<table><thead>
+<h1 id="examples-of-custom-data-tracking">Examples of Custom Data Tracking</h1>
+
+<h2 id="subdomains-amp-mobile-domains">Subdomains &amp; Mobile Domains</h2>
+
+<p>Usually Publisher employ various types of subdomains:</p>
+
+<ul>
+<li>special purpose, “technical” subdomains like: www.yoursite.com, ww1.yoursite.com, ww2.yoursite.com</li>
+<li>subject related subdomains, e.g.: technology.yoursite.com, fashion.yoursite.com, etc.</li>
+<li>mobile subdomains: m.yoursite.com</li>
+</ul>
+
+<p>To track traffic from all subdomains you’ll need obviously to deploy DMA code across all pages. By default our system treats every subdomain as a separate site, however there are simple ways to reconfigure it to your convenience.</p>
+
+<p>In the Tracking Settings you can configure default prefixes that let system know which domains should be treated separately and which data should be integrated. For example there’s a common practise to setup prefixes like “www.”, “ww2.” or “m.” to be consolidated with the main domain.</p>
+
+<p>The second method to consolidate data into one main domain from other subdomains (or even completely different domains!) is to overwrite an original page domain with the one you’ll want to. </p>
+
+<p>To do this just put the simple line of code on the website that should be consolidated (e.g. mobileversion.yoursite.com, mobileversionofyoursite.com etc.):</p>
+
+<p><code class="prettyprint">
+deep({&quot;page.domain&quot;: &quot;yoursite.com&quot;});
+</code></p>
+
+<h2 id="canonical-links">Canonical links</h2>
+
+<p>Does your site use query parameters for various tracking purposes, (e.g. seeing people who came from an email newsletter)? Or does your site have multiple URL structures for the same page/article (e.g. domain.com/section/artcle vs m.domain.com/12345)?</p>
+
+<p>By default, DMA is configured to use either the raw path or canonical links (when available). We strongly encourage implementing canonical links to ensure consistent tracking of pages and to prevent seeing multiple listings of the same page in the DMA Dashboard. If you&rsquo;re not familiar with canonical links, check out Google&rsquo;s Guide to Canonical Links.</p>
+
+<p>To utilize the canonical feature, you&rsquo;ll need to ensure that your site defines canonical links for each page (e.g <link rel='canonical'.../>) and that the pageCanonical option is set to true.</p>
+
+<p><code class="prettyprint">
+deep.options.pageCanonical = true;
+</code></p>
+
+<h2 id="custom-path-variable">Custom path variable</h2>
+
+<p>If you are unable or prefer to not use canonical links, you may alternatively set the Path Variable. The path must start with &ldquo;/&rdquo; (forward slash) and we highly recommend that you use a real path used to navigate to this page.
+The value set for the Path Variable should be generated by your CMS or set to window.location.pathname, so that the same piece of code can be used on all pages.</p>
+
+<p><b>Examples of setting the Path Variable:</b></p>
+
+<p><code class="prettyprint">deep({&quot;page.path&quot;: &quot;/some/article/path&quot;});</code></p>
+
+<p><code class="prettyprint">deep({&quot;page.path&quot;: cms.path.variable});</code></p>
+
+<h2 id="custom-page-titles">Custom page titles</h2>
+
+<p>By default DMA displays page titles by using the <code class="prettyprint">&lt;title&gt;</code> tag in your site&rsquo;s header.</p>
+
+<p>You can override the title used for a page in DMA by setting the Title Variable. This can be useful when all pages have a common prefix (e.g. &ldquo;Publication Name: Story Title&rdquo;), or when most pages share a common site title.</p>
+
+<p>You can set the title variable manually, or populate it dynamically by tying it to a variable in your CMS.</p>
+
+<p>Here you can set the title like this:</p>
+
+<p><code class="prettyprint">deep({&quot;page.title&quot;: &quot;Story Title&quot;});</code></p>
+
+<p><code class="prettyprint">deep({&quot;page.title&quot;: cms.title.variable});</code></p>
+
+<h2 id="sections-amp-authors">Sections &amp; Authors</h2>
+
+<p>In DMA you can filter your content by e.g. section or author. In fact it could be any dimension that fits your site’s structure. To implement this feature, you’ll need to set up section and author variables within the DMA code. So if a page is written by Bob Johnson in the section US Politics, you would set:</p>
+
+<p><code class="prettyprint">
+deep({
+    section: &quot;US Politics&quot;,
+    &quot;author.name&quot;: &quot;Bob Johnson&quot;
+});
+</code></p>
+
+<p>A page can both be in multiple sections and/or have multiple authors, therefore each variable accepts a comma separated list of values or an array of values. So if a page is co-written by Megan Summers and Kevin Smith in the sections Fashion and Fashion News, you would set:</p>
+
+<p><code class="prettyprint">
+deep({
+    section: [&quot;Fashion&quot;, &quot;Fashion News&quot;],
+    &quot;author.name&quot;: [&quot;Megan Summers&quot;, &quot;Kevin Smith&quot;]
+});
+</code></p>
+
+<p>The sections variable does not need to reflect real sections on the site, but should be thought of as groupings of pages that can be filtered on. Our suggestion is to populate these fields dynamically by tying them to a variable in your CMS which globally represents your sections and authors, so they can be easily changed.</p>
+
+<p><code class="prettyprint">
+deep({
+    section: cms.sections.variable,
+    &quot;author.name&quot;: cms.authors.variable
+});
+</code></p>
+
+<p>You can also populate these variables by using page metadata, a tag that already exists in your code, or part of your URL structure which contains these values.
+E.g. (using jQuery helpers)</p>
+
+<p><code class="prettyprint">
+deep(function(params) {
+    params.section = $(&quot;#page-info&quot;).data(&quot;section&quot;);
+    params[&quot;author.name&quot;] = $(&quot;#page-info&quot;).data(&quot;authors&quot;);
+});
+</code></p>
+
+<p>The above code assumes that on your page there is HTML Tag with id=”page-info”
+E.g.</p>
+
+<p><code class="prettyprint">&lt;section id=&quot;page-info&quot; data-section=&quot;Fashion News&quot; data-authors=&quot;Kevin Smith&quot;&gt;</code></p>
+
+<h2 id="ajax-amp-infinite-scroll">Ajax &amp; infinite scroll</h2>
+
+<aside class="notice">[Available in Q2 2016]</aside>
+
+<p>If your site uses infinite scroll, serves up content dynamically via AJAX, or pages change without the URL subsequently changing or the DOM refreshing, you’ll need to do some additional implementation.</p>
+
+<p>Anytime a visitor navigates to a new page or piece of content, you’ll need to call a custom function called page. This function is specifically designed for this kind of page change, and can be attached to click/swipe events, or to a pixel that is used to trigger content changes. Best practice is to make sure that the page function is called whenever you change to a new page of content using AJAX, so they always happen together.</p>
+
+<p>You’ll need to setup logic to handle these lines of code:</p>
+
+<p><code class="prettyprint">
+deep.newpage({
+    &quot;page.path&quot;:&quot;/newpath&quot;,
+    title: &quot;New title&quot;,
+    section: &quot;New Section&quot;,
+    &quot;author.name&quot;: &quot;New Author&quot;
+});
+</code></p>
+
+<p>Simply put, you’re setting the author and section (if they change) ahead of time since we take that data as holdover information when we reload the page with page(). If we are not passed the updated section and author information we’ll continue to register the original sections and authors from the previous page. If the new page has no section or author data, simply set that variable to &ldquo;null&rdquo;. For example:</p>
+
+<p><code class="prettyprint">
+deep.newpage({
+    &quot;page.path&quot;:&quot;/newpath&quot;,
+    &quot;page.title&quot;: &quot;New title&quot;,
+    section: &quot;New Section&quot;,
+    &quot;author.name&quot;: null
+});
+</code></p>
+
+<p>Next, when the page changes we’ll need to populate the path and title for the new page(s) within the page variable, so that the pings will reflect the new page the visitor is on.</p>
+
+<aside class="notice">
+<b>Important Note</b>: newpage should never be called when a user initially arrives on a page from an external source, and should only be called when a user navigates to subsequent pages without causing the DOM to be refreshed.
+<br><br>
+For pages with infinite scroll, any time a visitor is scrolling down to a new page, they will ping on each distinct URL they hit at least once.
+</aside>
+
+<h2 id="cookies">Cookies</h2>
+
+<p>DMA uses one first-party cookies.</p>
+
+<p>The _dtentr cookie is used to register if a user has visited the domain before and to calculate visitor frequency.</p>
+
+<h3 id="disabling-cookies">Disabling Cookies</h3>
+
+<p>Customers who are subject to the EU e-Privacy Directive, or who would prefer not to use cookies, can set the following variable to prevent DMA from using cookies</p>
+
+<p><code class="prettyprint">deep.options.doNotTrack = true;</code></p>
+
+<aside class="notice">
+Note: By using DMA without cookies, you will be unable to see some user-related metrics.
+</aside>
+
+          <h1 id="events">Events</h1>
+
+<p>Various events are sent when handling media that are embedded in HTML documents using the <code class="prettyprint">&lt;audio&gt;</code> and <code class="prettyprint">&lt;video&gt;</code> elements; this section lists them and provides some helpful information about using them. Moreover, DMA collect automatically web events like opening a page, page load time, page bounce etc.</p>
+
+<h2 id="website-events">Website Events</h2>
+
+<table>
 <tr>
-<th>Error Code</th>
-<th>Meaning</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>400</td>
-<td>Bad Request &ndash; Your request sucks</td>
+<th width="15%">Event Type</th>
+<th width="85%">Description</th>
 </tr>
 <tr>
-<td>401</td>
-<td>Unauthorized &ndash; Your API key is wrong</td>
+<td>page-open</td>
+<td>User opened a page</td>
 </tr>
 <tr>
-<td>403</td>
-<td>Forbidden &ndash; The kitten requested is hidden for administrators only</td>
+<td>page-ping</td>
+<td>Page-ping event is sent after each 15 seconds of user activity. Each event in user session has its number in sequence, starting from 1 (dimension: pingSeq). That means that DMA customers can easily and flexibly define custom event like Page View 30s+ with pingSeq = 2.</td>
+</tr>
+</table>
+
+<h2 id="media-events-audio-amp-video">Media Events (Audio &amp; Video)</h2>
+
+<aside class="notice">Available in Q2 2016</aside>
+
+<p>Media companies can use the  HTML <code class="prettyprint">&lt;video&gt;</code> element to embed video content in a document. The video element contains one or more video sources. To specify a video source, use either the src attribute or the <code class="prettyprint">&lt;source&gt;</code> element; the browser will choose the most suitable one.</p>
+
+<p>The HTML <code class="prettyprint">&lt;audio&gt;</code> element is used to embed sound content in documents. It may contain one or more audio sources, represented using the src attribute or the <code class="prettyprint">&lt;source&gt;</code> element; the browser will choose the most suitable one.</p>
+
+<p>Below you’ll see the list of events that are gathered automatically by DMA script. You will see in your data “audio” or “video” prefix accordingly, depending of the media event type.</p>
+
+<p>For example, instead of [media]-play, we will capture audio-play or video-play event.</p>
+
+<table>
+<tr>
+<th width="20%">Event Type</th>
+<th width="80%">Description</th>
 </tr>
 <tr>
-<td>404</td>
-<td>Not Found &ndash; The specified kitten could not be found</td>
+<td>[media]-abort</td>
+<td>Sent when playback is aborted; for example, if the media is playing and is restarted from the beginning, this event is sent.</td>
 </tr>
 <tr>
-<td>405</td>
-<td>Method Not Allowed &ndash; You tried to access a kitten with an invalid method</td>
+<td>[media]-canplay</td>
+<td>Sent when enough data is available that the media can be played, at least for a couple of frames.  This corresponds to the HAVE_ENOUGH_DATA readyState.</td>
 </tr>
 <tr>
-<td>406</td>
-<td>Not Acceptable &ndash; You requested a format that isn&rsquo;t json</td>
+<td>[media]-canplaythrough</td>
+<td>Sent when the ready state changes to CAN_PLAY_THROUGH, indicating that the entire media can be played without interruption, assuming the download rate remains at least at the current level. Note: Manually setting thecurrentTime will eventually fire a canplaythrough event in firefox. Other browsers might not fire this event.</td>
 </tr>
 <tr>
-<td>410</td>
-<td>Gone &ndash; The kitten requested has been removed from our servers</td>
+<td>[media]-durationchange</td>
+<td>The metadata has loaded or changed, indicating a change in duration of the media.  This is sent, for example, when the media has loaded enough that the duration is known.</td>
 </tr>
 <tr>
-<td>418</td>
-<td>I&rsquo;m a teapot</td>
+<td>[media]-emptied</td>
+<td>The media has become empty; for example, this event is sent if the media has already been loaded (or partially loaded), and the load() method is called to reload it.</td>
 </tr>
 <tr>
-<td>429</td>
-<td>Too Many Requests &ndash; You&rsquo;re requesting too many kittens! Slow down!</td>
+<td>[media]-encrypted</td>
+<td>The user agent has encountered initialization data in the media data.</td>
 </tr>
 <tr>
-<td>500</td>
-<td>Internal Server Error &ndash; We had a problem with our server. Try again later.</td>
+<td>[media]-ended</td>
+<td>Sent when playback completes.</td>
 </tr>
 <tr>
-<td>503</td>
-<td>Service Unavailable &ndash; We&rsquo;re temporarially offline for maintanance. Please try again later.</td>
+<td>[media]-error</td>
+<td>Sent when an error occurs.  The element&rsquo;s error attribute contains more information. See Error handling for details.</td>
 </tr>
-</tbody></table>
+<tr>
+<td>[media]-interruptbegin</td>
+<td>Sent when audio playing on a Firefox OS device is interrupted, either because the app playing the audio is sent to the background, or audio in a higher priority audio channel begins to play. See Using the AudioChannels API for more details.</td>
+</tr>
+<tr>
+<td>[media]-interruptend</td>
+<td>Sent when previously interrupted audio on a Firefox OS device commences playing again — when the interruption ends. This is when the associated app comes back to the foreground, or when the higher priority audio finished playing. See Using the AudioChannels API for more details.</td>
+</tr>
+<tr>
+<td>[media]-loadeddata</td>
+<td>The first frame of the media has finished loading.</td>
+</tr>
+<tr>
+<td>[media]-loadedmetadata</td>
+<td>The media&rsquo;s metadata has finished loading; all attributes now contain as much useful information as they&rsquo;re going to.</td>
+</tr>
+<tr>
+<td>[media]-loadstart</td>
+<td>Sent when loading of the media begins.</td>
+</tr>
+<tr>
+<td>[media]-mozaudioavailable</td>
+<td>Sent when an audio buffer is provided to the audio layer for processing; the buffer contains raw audio samples that may or may not already have been played by the time you receive the event.</td>
+</tr>
+<tr>
+<td>[media]-pause</td>
+<td>Sent when playback is paused.</td>
+</tr>
+<tr>
+<td>[media]-play</td>
+<td>Sent when playback of the media starts after having been paused; that is, when playback is resumed after a prior pause event.</td>
+</tr>
+<tr>
+<td>[media]-playing</td>
+<td>Sent when the media begins to play (either for the first time, after having been paused, or after ending and then restarting).</td>
+</tr>
+<tr>
+<td>[media]-progress</td>
+<td>Sent periodically to inform interested parties of progress downloading the media. Information about the current amount of the media that has been downloaded is available in the media element&rsquo;s buffered attribute.</td>
+</tr>
+<tr>
+<td>[media]-ratechange</td>
+<td>Sent when the playback speed changes.</td>
+</tr>
+<tr>
+<td>[media]-seeked</td>
+<td>Sent when a seek operation completes.</td>
+</tr>
+<tr>
+<td>[media]-seeking</td>
+<td>Sent when a seek operation begins.</td>
+</tr>
+<tr>
+<td>[media]-stalled</td>
+<td>Sent when the user agent is trying to fetch media data, but data is unexpectedly not forthcoming.</td>
+</tr>
+<tr>
+<td>[media]-suspend</td>
+<td>Sent when loading of the media is suspended; this may happen either because the download has completed or because it has been paused for any other reason.</td>
+</tr>
+<tr>
+<td>[media]-timeupdate</td>
+<td>The time indicated by the element&rsquo;s currentTime attribute has changed.</td>
+</tr>
+<tr>
+<td>[media]-volumechange</td>
+<td>Sent when the audio volume changes (both when the volume is set and when the muted attribute is changed).</td>
+</tr>
+<tr>
+<td>[media]-waiting</td>
+<td>Sent when the requested operation (such as playback) is delayed pending the completion of another operation (such as a seek).</td>
+</tr>
+</table>
+
+          <h1 id="data-attributes">Data Attributes</h1>
+
+<p>All collected events will be automatically enriched by a whole set of additional dimensions in the following areas:</p>
+
+<ul>
+<li>Event Context</li>
+<li>Video / Audio Context</li>
+<li>Page Context</li>
+<li>User Location Context, </li>
+<li>User Internet Provider Context</li>
+<li>User Device Context</li>
+</ul>
+
+<h2 id="event-context">Event Context</h2>
+
+<table>
+<tr>
+<th width="15%">Variable name</th>
+<th width="85%">Description</th>
+</tr>
+<tr>
+<td>event.type</td>
+<td>Type of event - see chapter 3 (e.g. video_play)</td>
+</tr>
+<tr>
+<td>event.timestamp</td>
+<td>Timestamp of the event</td>
+</tr>
+<tr>
+<td>event.localtime.year</td>
+<td>Year, e.g. 2016</td>
+</tr>
+<tr>
+<td>event.localtime.month</td>
+<td>Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec</td>
+</tr>
+<tr>
+<td>event.localtime.monthno</td>
+<td>Number of the month: 1, 2, … 12, where 1 is January, 12 is December</td>
+</tr>
+<tr>
+<td>event.localtime.day</td>
+<td>Day of the month: 1, 2, … [28 | 29 | 30 | 31] </td>
+</tr>
+<tr>
+<td>event.localtime.hour</td>
+<td>Hour of the day: 0, 1, 2, … 23</td>
+</tr>
+<tr>
+<td>event.localtime.minute</td>
+<td>Minute of the hour: 0, 1, 2, … 59</td>
+</tr>
+<tr>
+<td>event.localtime.weekday</td>
+<td>Sun, Mon, Tue, Wed, Thu, Fri, Sat</td>
+</tr>
+<tr>
+<td>event.localtime.weekdayno</td>
+<td>0, 1, … 6, where 0 is Sunday, and 6 is Saturday</td>
+</tr>
+<tr>
+<td>event.localtime.utcoffset</td>
+<td>Local timezone offset in minutes from UTC.</td>
+</tr>
+<tr>
+<td>event.pingseq</td>
+<td>Sequence number of page ping event. This is a technical parameter that is used for track detailed active user engagement (Attention Time Spent) in accordance to the public <a href="https://chartbeat.com/public-release-methodology/">Chartbeat methodology.<a></td>
+</tr>
+</table>
+
+<h2 id="page-context">Page Context</h2>
+
+<p>Page context characterizes the place on the web where users are browsing an article, watching a video and where they came from.</p>
+
+<p>There are two high level groups of parameters: page and referrer.  </p>
+
+<p><strong>Page</strong> is a web page (URL)  where the video was loaded from. </p>
+
+<p><strong>Referrer</strong> is a URL of a web page that a user had visited before he or she came to the page.
+<aside class="notice">
+Remarks: Referrer is registered when referrer page is linking to the visited page.
+</aside></p>
+
+<p>The colours in the table corresponds with the example below.</p>
+
+<table>
+<tr>
+<th width="20%">Event Type</th>
+<th width="80%">Description</th>
+</tr>
+<tr>
+<td>page.domain</td>
+<td>This should be set explicitly by client’s script.</td>
+</tr>
+<tr>
+<td>page.title</td>
+<td>HTML head <i>title</i> of the page</td>
+</tr>
+<tr>
+<td>page.protocol</td>
+<td>Usually http or https</td>
+</tr>
+<tr>
+<td>page.host</td>
+<td>Domain with page.port e.g. www.nytimes.com:8222</td>
+</tr>
+<tr>
+<td>page.hostname</td>
+<td>Domain, e.g. www.nytimes.com</td>
+</tr>
+<tr>
+<td>page.port</td>
+<td>HTTP protocol port. When a page use the default http port 80, the field is empty.</td>
+</tr>
+<tr>
+<td>page.path</td>
+<td>Part of the URL, excluding page.protcol, page.host, page.search  and page.hash</td>
+</tr>
+<tr>
+<td>page.href</td>
+<td>URL of the page where the video was loaded from, without parameters (page.protocol + page.host + page.path)</td>
+</tr>
+<tr>
+<td>page.search</td>
+<td>Parameter string in the URL starting after “?” character</td>
+</tr>
+<tr>
+<td>page.query.[parameter]</td>
+<td>Parsed search parameter (see above) where [parameter] is the parameter name. 
+For example URL:
+&lsquo;http://deep.bi/?utm_source=google&utm_medium=cpc
+page.query.utm_source=”google”
+page.query.utm_medium=”cpc”&rsquo;</td>
+</tr>
+<tr>
+<td>page.hash</td>
+<td>Parameter string in the URL starting after “#” character</td>
+</tr>
+<tr>
+<td>page.loadTime</td>
+<td>Time to load the page in milliseconds (page-open events only)</td>
+</tr>
+<tr>
+<td>referrer.protocol</td>
+<td>Usually http or https</td>
+</tr>
+<tr>
+<td>referrer.host</td>
+<td>Domain with page.port e.g. www.nytimes.com:8222</td>
+</tr>
+<tr>
+<td>referrer.hostname</td>
+<td>Domain, e.g. www.nytimes.com</td>
+</tr>
+<tr>
+<td>referrer.port</td>
+<td>HTTP protocol port. When a page use the default http port 80, the field is empty.</td>
+</tr>
+<tr>
+<td>referrer.path</td>
+<td>Part of the URL, excluding page.protcol, page.host, page.search  and page.hash</td>
+</tr>
+<tr>
+<td>referrer.href</td>
+<td>URL of the page where the video was loaded from, without parameters (page.protocol + page.host + page.path)</td>
+</tr>
+<tr>
+<td>referrer.search</td>
+<td>Parameter string in the URL starting after “?” character</td>
+</tr>
+<tr>
+<td>referrer.query.[parameter]</td>
+<td>Parsed search parameter (see above) where [parameter] is the parameter name.
+'http://deep.bi/?utm_source=google&utm_medium=cpc
+page.query.utm_source=”google”
+page.query.utm_medium=”cpc”</td>&rsquo;
+</tr>
+<tr>
+<td>referrer.hash</td>
+<td>Parameter string in the URL starting after “#” character</td>
+</tr>
+</table>
+
+<h2 id="video-or-audio-context">Video or Audio Context</h2>
+
+<aside class="notice">
+Available in Q2 2016
+</aside>
+
+<p>DMA script collects all available audio or video attributes when an event occurs. In the table below we list those attributes. In data loaded to DMA the [media] will be replaced by video or audio accordingly. If an attribute is present with one kind of events only (audio or video) we put that in the table.</p>
+
+<table>
+<tr>
+<th width="15%">Variable name</th>
+<th width="85%">Description</th>
+</tr>
+<tr>
+<td>[media].autoplay</td>
+<td>A Boolean attribute; if specified, the video automatically begins to play back as soon as it can do so without stopping to finish loading the data.Note: Some versions of Chrome only acknowledge autostart, rather than autoplay</td>
+</tr>
+<tr>
+<td>[media].buffered</td>
+<td>An attribute you can read to determine the time ranges of the buffered media. This attribute contains a TimeRanges object.</td>
+</tr>
+<tr>
+<td>[media].controls</td>
+<td>If this attribute is present, the browser will offer controls to allow the user to control video playback, including volume, seeking, and pause/resume playback.</td>
+</tr>
+<tr>
+<td>video.crossorigin</td>
+<td>This enumerated attribute indicates whether to use CORS to fetch the related image. CORS-enabled resources can be reused in the <i>canvas</i> element without being tainted. The allowed values are:
+<br><b>anonymous</b><br>
+Sends a  cross-origin request without a credential. In other words, it sends the Origin: HTTP header without a cookie, X.509 certificate, or performing HTTP Basic authentication. If the server does not give credentials to the origin site (by not setting the Access-Control-Allow-Origin: HTTP header), the image will betainted, and its usage restricted.
+<br><b>use-credentials</b><br>
+Sends a  cross-origin request with a credential. In other words, it sends the Origin: HTTP header with a cookie, a certificate, or performing HTTP Basic authentication. If the server does not give credentials to the origin site (throughAccess-Control-Allow-Credentials: HTTP header), the image will be tainted and its usage restricted.
+<br><br>When not present, the resource is fetched without a CORS request (i.e. without sending the Origin: HTTP header), preventing its non-tainted used in <i>canvas</i> elements. If invalid, it is handled as if the enumerated keyword anonymous was used. See CORS settings attributes for additional information.</td>
+</tr>
+<tr>
+<td>video.height</td>
+<td>The height of the video&rsquo;s display area, in CSS pixels.</td>
+</tr>
+<tr>
+<td>[media].loop</td>
+<td>A Boolean attribute; if specified, we will, upon reaching the end of the video, automatically seek back to the start.</td>
+</tr>
+<tr>
+<td>[media].muted</td>
+<td>A Boolean attribute which indicates the default setting of the audio contained in the video. If set, the audio will be initially silenced. Its default value is false, meaning that the audio will be played when the video is played.</td>
+</tr>
+<tr>
+<td>[media].played</td>
+<td>A TimeRanges object indicating all the ranges of the video that have been played.</td>
+</tr>
+<tr>
+<td>[media].preload</td>
+<td>This enumerated attribute is intended to provide a hint to the browser about what the author thinks will lead to the best user experience. It may have one of the following values:
+<br><b>none</b>: indicates that the video should not be preloaded.
+<br><b>metadata</b>: indicates that only video metadata (e.g. length) is fetched.
+<br><b>auto</b>: indicates that the whole video file could be downloaded, even if the user is not expected to use it.
+<br><b>the empty string</b>: synonym of the auto value.
+<br>If not set, its default value is browser-defined (i.e. each browser may have its default value). The spec advises it to be set to metadata.
+<br><br><i>Usage notes:
+<br>The autoplay attribute has precedence over preload. If autoplay is specified, the browser would obviously need to start downloading the video for playback.
+The specification does not force the browser to follow the value of this attribute; it is a mere hint.</i></td>
+</tr>
+<tr>
+<td>video.poster</td>
+<td>A URL indicating a poster frame to show until the user plays or seeks. If this attribute isn&rsquo;t specified, nothing is displayed until the first frame is available; then the first frame is shown as the poster frame.</td>
+</tr>
+<tr>
+<td>[media].src</td>
+<td>The URL of the video to embed. This is optional; you may instead use the <source>element within the video block to specify the video to embed.</td>
+</tr>
+<tr>
+<td>video.width</td>
+<td>The width of the video&rsquo;s display area, in CSS pixels.</td>
+</tr>
+<tr>
+<td>[media].volume</td>
+<td>The playback volume, in the range 0.0 (silent) to 1.0 (loudest).</td>
+</tr>
+
+</table>
+
+<h2 id="user-id-context">User ID Context</h2>
+
+<p>List of user IDs.</p>
+
+<table>
+<tr>
+<th width="20%">Variable name</th>
+<th width="80%">Description</th>
+</tr>
+<tr>
+<td>user.id.deepcookie</td>
+<td>Cookie that installed by DMA script</td>
+</tr>
+<tr>
+<td>user.id.ip</td>
+<td>User IP number</td>
+</tr>
+<tr>
+<td>user.id.session</td>
+<td>Unique session ID used for joining user events within one session</td>
+</tr>
+<tr>
+<td>user.id.fingerprint</td>
+<td><b><i>[available Q3 2016]</i></b> Unique user ID based of browser fingerprinting. </td>
+</tr>
+</table>
+
+<h2 id="user-attention-context">User Attention Context</h2>
+
+<p>User attention characteristics.</p>
+
+<table>
+<tr>
+<th width="20%">Variable name</th>
+<th width="80%">Description</th>
+</tr>
+<tr>
+<td>user.attention.active</td>
+<td>Active time spent on page in milliseconds</td>
+</tr>
+<tr>
+<td>user.attention.idle</td>
+<td>Idle time spent on page in milliseconds</td>
+</tr>
+<tr>
+<td>user.attention.total</td>
+<td>Total time spent on page in milliseconds</td>
+</tr>
+</table>
+
+<h2 id="user-location-context">User Location Context</h2>
+
+<aside class="notice">
+Available in Q2 2016
+</aside>
+
+<p>User location characterizes physical user location based on user IP address.</p>
+
+<table>
+<tr>
+<th width="20%">Variable name</th>
+<th width="80%">Description</th>
+</tr>
+<tr>
+<td>user.location.country</td>
+<td>User country</td>
+</tr>
+<tr>
+<td>user.location.region</td>
+<td>User region (state, county, province)</td>
+</tr>
+<tr>
+<td>user.location.city</td>
+<td>User City</td>
+</tr>
+<tr>
+<td>user.location.population</td>
+<td>City population</td>
+</tr>
+</table>
+
+<h2 id="user-internet-provider">User Internet Provider</h2>
+
+<aside class="notice">
+Available in Q2 2016
+</aside>
+
+<p>This context describes the internet provider a user is using during the web event.</p>
+
+<table>
+<tr>
+<th width="20%">Variable name</th>
+<th width="80%">Description</th>
+</tr>
+<tr>
+<td>user.isp.name</td>
+<td>Name of internet service provider</td>
+</tr>
+</table>
+
+<h2 id="user-device-context">User Device Context</h2>
+
+<aside class="notice">
+Available in Q2 2016
+</aside>
+
+<p>User device context describes characteristics of the device a user is using.</p>
+
+<table>
+<tr>
+<th width="20%">Variable name</th>
+<th width="80%">Description</th>
+</tr>
+<tr>
+<td>user.device.screen.width</td>
+<td>Device screen width</td>
+</tr>
+<tr>
+<td>user.device.screen.height</td>
+<td>Device screen height</td>
+</tr>
+<tr>
+<td>user.device.screen.availWidth</td>
+<td>Device screen width minus system taskbar</td>
+</tr>
+<tr>
+<td>user.device.screen.availHeight</td>
+<td>Device screen height minus system taskbar</td>
+</tr>
+<tr>
+<td>user.device.screen.orientation</td>
+<td>Device orientation</td>
+</tr>
+<tr>
+<td>user.device.type</td>
+<td>For example: tablet, smartphone, tv, desktop</td>
+</tr>
+<tr>
+<td>user.device.brand</td>
+<td>For example: Apple, Samsung</td>
+</tr>
+<tr>
+<td>user.device.model</td>
+<td>For example: iPhone 5, Galaxy III</td>
+</tr>
+<tr>
+<td>user.device.browser.producer</td>
+<td>For example: Google, Mozilla, Microsoft</td>
+</tr>
+<tr>
+<td>user.device.browser.name</td>
+<td>For example: Internet Explorer</td>
+</tr>
+<tr>
+<td>user.device.browser.version</td>
+<td>Detailed version of user browser</td>
+</tr>
+<tr>
+<td>user.device.agent</td>
+<td>Full user-agent string</td>
+</tr>
+</table>
 
       </div>
       <div class="dark-box">
           <div class="lang-selector">
-                <a href="#" data-language-name="shell">shell</a>
-                <a href="#" data-language-name="ruby">ruby</a>
-                <a href="#" data-language-name="python">python</a>
+                <a href="#" data-language-name="javascript">javascript</a>
           </div>
       </div>
     </div>
