@@ -21,7 +21,7 @@ Various events are sent when handling media that are embedded in HTML documents 
 
 ## Media Events (Audio & Video)
 
-<aside class="notice">Available in Q2 2016</aside>
+<aside class="notice"><b>[Available in Q2 2016]</b></aside>
 
 Media companies can use the  HTML `<video>` element to embed video content in a document. The video element contains one or more video sources. To specify a video source, use either the src attribute or the `<source>` element; the browser will choose the most suitable one.
 

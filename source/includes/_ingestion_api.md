@@ -18,13 +18,13 @@ deep.bi Ingestion API is a HTTP REST API and it accepts data in JSON format.
 
 ## Authentication
 
-To send your data you'll need two keys: `STREAM_ID WRITE_API_KEY`
+To send your data you'll need two keys: `STREAM_ID' and 'WRITE_API_KEY`
 
 `STREAM_ID` determines where your data will be stored. You can have any number of streams you want, for example for different stores, projects or your clients (if you provide analytics to your customers).
 
 `WRITE_API_KEY` is your authorization key related to your accunt, that allows you to send data.
 
-To get these keys please refer http://deep.bi/admin page.
+To get these keys please sign up for a deep.bi account at<a href="http://deep.bi/">deep.bi website</a>.
 
 ## Basic Example
 

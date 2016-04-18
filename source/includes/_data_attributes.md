@@ -69,6 +69,34 @@ All collected events will be automatically enriched by a whole set of additional
 
 ## Page Context
 
+> To better explain page context data we use an example page from NY Times page:
+
+```
+http://www.nytimes.com/video/movies/100000004142315/anatomy-of-a-scene-the-revenant.html?playlistId=1194811622182&region=video-grid&version=video-grid-thumbnail&contentCollection=Times+Video&contentPlacement=6&module=recent-videos&action=click&pgType=Multimedia&eventName=video-grid-click#section-btf
+```
+
+> For this URL, DMA script registers the following attributes:
+
+```
+page.protocol=”http”
+page.host=”www.nytimes.com”
+page.hostname=”www.nytimes.com”
+page.port=””
+page.path=”/video/movies/100000004142315/anatomy-of-a-scene-the-revenant.html”
+page.href=”http://www.nytimes.com/video/movies/100000004142315/anatomy-of-a-scene-the-revenant.html”
+page.search=”?playlistId=1194811622182&region=video-grid&version=video-grid-thumbnail&contentCollection=Times+Video&contentPlacement=6&module=recent-videos&action=click&pgType=Multimedia&eventName=video-grid-click”
+page.query.playlistId=”1194811622182”
+page.query.region=”video-grid”
+page.query.version=”video-grid-thumbnail”
+page.query.contentCollection=”Times+Video”
+page.query.contentPlacement=”6”
+page.query.module=”recent-videos”
+page.query.action=”click”
+page.query.pgType=”Multimedia”
+page.query.eventName=”video-grid-click”
+page.hash=”section-btf”
+```
+
 Page context characterizes the place on the web where users are browsing an article, watching a video and where they came from.
 
 There are two high level groups of parameters: page and referrer.  
@@ -77,10 +105,8 @@ There are two high level groups of parameters: page and referrer.
 
 **Referrer** is a URL of a web page that a user had visited before he or she came to the page.
 <aside class="notice">
-Remarks: Referrer is registered when referrer page is linking to the visited page.
+<b>Remarks:</b> Referrer is registered when referrer page is linking to the visited page.
 </aside>
-
-The colours in the table corresponds with the example below.
 
 <table>
 <tr>
@@ -182,9 +208,7 @@ page.query.utm_medium=”cpc”</td>'
 
 ## Video or Audio Context
 
-<aside class="notice">
-Available in Q2 2016
-</aside>
+<aside class="notice"><b>[Available in Q2 2016]</b></aside>
 
 DMA script collects all available audio or video attributes when an event occurs. In the table below we list those attributes. In data loaded to DMA the [media] will be replaced by video or audio accordingly. If an attribute is present with one kind of events only (audio or video) we put that in the table.
 
@@ -313,9 +337,7 @@ User attention characteristics.
 
 ## User Location Context
 
-<aside class="notice">
-Available in Q2 2016
-</aside>
+<aside class="notice"><b>[Available in Q2 2016]</b></aside>
 
 User location characterizes physical user location based on user IP address.
 
@@ -344,9 +366,7 @@ User location characterizes physical user location based on user IP address.
 
 ## User Internet Provider
 
-<aside class="notice">
-Available in Q2 2016
-</aside>
+<aside class="notice"><b>[Available in Q2 2016]</b></aside>
 
 This context describes the internet provider a user is using during the web event.
 
@@ -363,9 +383,7 @@ This context describes the internet provider a user is using during the web even
 
 ## User Device Context
 
-<aside class="notice">
-Available in Q2 2016
-</aside>
+<aside class="notice"><b>[Available in Q2 2016]</b></aside>
 
 User device context describes characteristics of the device a user is using.
 

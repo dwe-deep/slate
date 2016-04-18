@@ -131,6 +131,8 @@
 <li>any other data send via REST API in JSON format.</li>
 </ul>
 
+<p>Media companies can start analyze their data just after installing the DMA scripts on their websites (usually via CMS) and setting up a few variables or they can use REST API. </p>
+
 <p>The goal of this document is to assist the developer responsible for integration of Deep.BI. This document describes integration with JavaScript, but integration can be done with REST API. </p>
 
 <p>The DMA JavaScript code is fully asynchronous in order to not slow down publisher’s site. Once loaded, DMA code works like most other analytics services — it triggers the loading of a beacon image, which returns a 1x1 pixel image.</p>
@@ -148,7 +150,11 @@
 <span class="o">&lt;</span><span class="sr">/script&gt;</span><span class="err">)
 </span></code></pre>
 
-<p>Installing DMA JavaScript code should be as easy as pasting this snippet inside the <code class="prettyprint">&lt;head&gt;</code> tag, preferably right after the opening:</p>
+<p>Installing DMA JavaScript code should be as easy as pasting this snippet inside the <code class="prettyprint">&lt;head&gt;</code> tag, preferably right after the opening.</p>
+
+<p>Once this is implemented globally across your site, you might need to make a few configuration tweaks to better fit your site. All of these options are outlined in the rest of this guide.</p>
+
+<aside class='notice'><b>Important Note:</b> Tag managers may be used to implement DMA code. However, our JavaScript must still be placed inside the <i><b>head</b></i> tag.</aside>
 
 <h2 id="authorization">Authorization</h2>
 
@@ -176,18 +182,29 @@ You must replace <code>YOUR_STREAM_KEY</code> and <code>YOUR_WRITE_KEY_KEY</code
 </aside>
 
 <h2 id="sending-data">Sending data</h2>
+
+<blockquote>
+<p>Sending data script</p>
+</blockquote>
 <pre class="highlight javascript"><code><span class="o">&lt;</span><span class="nx">script</span> <span class="nx">type</span><span class="o">=</span><span class="s2">"text/javascript"</span><span class="o">&gt;</span>
 <span class="nx">deep</span><span class="p">({});</span>
 <span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
 </span></code></pre>
 
-<p>To start collecting data put the following script in the place where it should be fired:</p>
+<p>To start collecting data put the following script in the place where it should be fired.</p>
 
-<p>In most cases it can be anywhere in the <body> section of a page. The script will gather automatically pre-defined type of events - see section Events.</p>
+<p>In most cases it can be anywhere in the <code class="prettyprint">&lt;body&gt;</code> section of a page. The script will gather automatically pre-defined type of events - see <a href="#events">Events</a> section for more details.</p>
 
-<p>If you’d like to gather other events you should put additional, custom lines of the script in a place where these events occur adding to it some custom parameters. For more details see section Advanced Integration Guide.</p>
+<p>If you’d like to gather other events you should put additional, custom lines of the script in a place where these events occur adding to it some custom parameters. For more details see our <a href="#advanced-integration-guide">Advanced Integration Guide</a>.</p>
+
+<aside class="success">
+That&rsquo;s it! Basic integration with DeepBI is now completed.
+</aside>
 
           <h1 id="advanced-integration-guide">Advanced Integration Guide</h1>
+
+<aside class="notice">After completing basic integration described at our <a href="#quick-start-guide">Quick Start Guide</a> it is now time to move on and learn about more advanced use cases of integration. Including adding tracking for custom attributes and custom events. 
+</aside>
 
 <h2 id="tracking-custom-data">Tracking Custom Data</h2>
 
@@ -216,8 +233,6 @@ Examples of custom events:</p>
 </ul>
 
 <h2 id="custom-attributes">Custom Attributes</h2>
-
-<p>Adding custom attributes to automatically collected events</p>
 
 <blockquote>
 <p>Example: Add custom dimensions (attributes) to all video events</p>
@@ -289,7 +304,7 @@ user.id.email: "john.doe@yahoo.com"
 <p>Deep Media Analytics also allows you to collect custom events with custom attributes. To trigger DMA to register an event you can use previously defined global function deep (see Chapter 2). It takes as a parameter your data in JSON format. </p>
 
 <aside class="notice">
-If event.type property is not specified it defaults to “custom-event”.
+<b>Note:</b>If event.type property is not specified it will be registered with default value: <b><i>custom-event</i></b>.
 </aside>
 
 <h2 id="custom-server-side-transformations">Custom server-side transformations</h2>
@@ -320,16 +335,20 @@ If event.type property is not specified it defaults to “custom-event”.
 
 <p>Deep Media Analytics also allows you to specify custom transformations (see Transformation API Documentation).</p>
 
-<h1 id="examples-of-custom-data-tracking">Examples of Custom Data Tracking</h1>
+<h1 id="custom-data-examples">Custom Data Examples</h1>
+
+<aside class="notice">
+This section covers common examples of tracking custom data.
+</aside>
 
 <h2 id="subdomains-amp-mobile-domains">Subdomains &amp; Mobile Domains</h2>
 
 <p>Usually Publisher employ various types of subdomains:</p>
 
 <ul>
-<li>special purpose, “technical” subdomains like: www.yoursite.com, ww1.yoursite.com, ww2.yoursite.com</li>
-<li>subject related subdomains, e.g.: technology.yoursite.com, fashion.yoursite.com, etc.</li>
-<li>mobile subdomains: m.yoursite.com</li>
+<li>special purpose, “technical” subdomains like: <b>www</b>.yoursite.com, <b>ww1</b>.yoursite.com, <b>ww2</b>.yoursite.com</li>
+<li>subject related subdomains, e.g.: <b>technology</b>.yoursite.com, <b>fashion</b>.yoursite.com, etc.</li>
+<li>mobile subdomains: <b>m</b>.yoursite.com</li>
 </ul>
 
 <p>To track traffic from all subdomains you’ll need obviously to deploy DMA code across all pages. By default our system treats every subdomain as a separate site, however there are simple ways to reconfigure it to your convenience.</p>
@@ -350,7 +369,7 @@ deep({&quot;page.domain&quot;: &quot;yoursite.com&quot;});
 
 <p>By default, DMA is configured to use either the raw path or canonical links (when available). We strongly encourage implementing canonical links to ensure consistent tracking of pages and to prevent seeing multiple listings of the same page in the DMA Dashboard. If you&rsquo;re not familiar with canonical links, check out Google&rsquo;s Guide to Canonical Links.</p>
 
-<p>To utilize the canonical feature, you&rsquo;ll need to ensure that your site defines canonical links for each page (e.g <link rel='canonical'.../>) and that the pageCanonical option is set to true.</p>
+<p>To utilize the canonical feature, you&rsquo;ll need to ensure that your site defines canonical links for each page (e.g <code class="prettyprint">&lt;link rel=&#39;canonical&#39;.../&gt;</code>) and that the pageCanonical option is set to true.</p>
 
 <p><code class="prettyprint">
 deep.options.pageCanonical = true;
@@ -427,7 +446,7 @@ E.g.</p>
 
 <h2 id="ajax-amp-infinite-scroll">Ajax &amp; infinite scroll</h2>
 
-<aside class="notice">[Available in Q2 2016]</aside>
+<aside class="notice"><b>[Available in Q2 2016]</b></aside>
 
 <p>If your site uses infinite scroll, serves up content dynamically via AJAX, or pages change without the URL subsequently changing or the DOM refreshing, you’ll need to do some additional implementation.</p>
 
@@ -476,7 +495,7 @@ For pages with infinite scroll, any time a visitor is scrolling down to a new pa
 <p><code class="prettyprint">deep.options.doNotTrack = true;</code></p>
 
 <aside class="notice">
-Note: By using DMA without cookies, you will be unable to see some user-related metrics.
+<b>Note</b>: By using DMA without cookies, you will be unable to see some user-related metrics.
 </aside>
 
           <h1 id="events">Events</h1>
@@ -502,7 +521,7 @@ Note: By using DMA without cookies, you will be unable to see some user-related 
 
 <h2 id="media-events-audio-amp-video">Media Events (Audio &amp; Video)</h2>
 
-<aside class="notice">Available in Q2 2016</aside>
+<aside class="notice"><b>[Available in Q2 2016]</b></aside>
 
 <p>Media companies can use the  HTML <code class="prettyprint">&lt;video&gt;</code> element to embed video content in a document. The video element contains one or more video sources. To specify a video source, use either the src attribute or the <code class="prettyprint">&lt;source&gt;</code> element; the browser will choose the most suitable one.</p>
 
@@ -695,6 +714,34 @@ Note: By using DMA without cookies, you will be unable to see some user-related 
 
 <h2 id="page-context">Page Context</h2>
 
+<blockquote>
+<p>To better explain page context data we use an example page from NY Times page:</p>
+</blockquote>
+<pre class="highlight plaintext"><code>http://www.nytimes.com/video/movies/100000004142315/anatomy-of-a-scene-the-revenant.html?playlistId=1194811622182&amp;region=video-grid&amp;version=video-grid-thumbnail&amp;contentCollection=Times+Video&amp;contentPlacement=6&amp;module=recent-videos&amp;action=click&amp;pgType=Multimedia&amp;eventName=video-grid-click#section-btf
+</code></pre>
+
+<blockquote>
+<p>For this URL, DMA script registers the following attributes:</p>
+</blockquote>
+<pre class="highlight plaintext"><code>page.protocol=”http”
+page.host=”www.nytimes.com”
+page.hostname=”www.nytimes.com”
+page.port=””
+page.path=”/video/movies/100000004142315/anatomy-of-a-scene-the-revenant.html”
+page.href=”http://www.nytimes.com/video/movies/100000004142315/anatomy-of-a-scene-the-revenant.html”
+page.search=”?playlistId=1194811622182&amp;region=video-grid&amp;version=video-grid-thumbnail&amp;contentCollection=Times+Video&amp;contentPlacement=6&amp;module=recent-videos&amp;action=click&amp;pgType=Multimedia&amp;eventName=video-grid-click”
+page.query.playlistId=”1194811622182”
+page.query.region=”video-grid”
+page.query.version=”video-grid-thumbnail”
+page.query.contentCollection=”Times+Video”
+page.query.contentPlacement=”6”
+page.query.module=”recent-videos”
+page.query.action=”click”
+page.query.pgType=”Multimedia”
+page.query.eventName=”video-grid-click”
+page.hash=”section-btf”
+</code></pre>
+
 <p>Page context characterizes the place on the web where users are browsing an article, watching a video and where they came from.</p>
 
 <p>There are two high level groups of parameters: page and referrer.  </p>
@@ -703,10 +750,8 @@ Note: By using DMA without cookies, you will be unable to see some user-related 
 
 <p><strong>Referrer</strong> is a URL of a web page that a user had visited before he or she came to the page.
 <aside class="notice">
-Remarks: Referrer is registered when referrer page is linking to the visited page.
+<b>Remarks:</b> Referrer is registered when referrer page is linking to the visited page.
 </aside></p>
-
-<p>The colours in the table corresponds with the example below.</p>
 
 <table>
 <tr>
@@ -808,9 +853,7 @@ page.query.utm_medium=”cpc”</td>&rsquo;
 
 <h2 id="video-or-audio-context">Video or Audio Context</h2>
 
-<aside class="notice">
-Available in Q2 2016
-</aside>
+<aside class="notice"><b>[Available in Q2 2016]</b></aside>
 
 <p>DMA script collects all available audio or video attributes when an event occurs. In the table below we list those attributes. In data loaded to DMA the [media] will be replaced by video or audio accordingly. If an attribute is present with one kind of events only (audio or video) we put that in the table.</p>
 
@@ -939,9 +982,7 @@ The specification does not force the browser to follow the value of this attribu
 
 <h2 id="user-location-context">User Location Context</h2>
 
-<aside class="notice">
-Available in Q2 2016
-</aside>
+<aside class="notice"><b>[Available in Q2 2016]</b></aside>
 
 <p>User location characterizes physical user location based on user IP address.</p>
 
@@ -970,9 +1011,7 @@ Available in Q2 2016
 
 <h2 id="user-internet-provider">User Internet Provider</h2>
 
-<aside class="notice">
-Available in Q2 2016
-</aside>
+<aside class="notice"><b>[Available in Q2 2016]</b></aside>
 
 <p>This context describes the internet provider a user is using during the web event.</p>
 
@@ -989,9 +1028,7 @@ Available in Q2 2016
 
 <h2 id="user-device-context">User Device Context</h2>
 
-<aside class="notice">
-Available in Q2 2016
-</aside>
+<aside class="notice"><b>[Available in Q2 2016]</b></aside>
 
 <p>User device context describes characteristics of the device a user is using.</p>
 
@@ -1072,13 +1109,13 @@ Available in Q2 2016
 
 <h2 id="authentication">Authentication</h2>
 
-<p>To send your data you&rsquo;ll need two keys: <code class="prettyprint">STREAM_ID WRITE_API_KEY</code></p>
+<p>To send your data you&rsquo;ll need two keys: <code class="prettyprint">STREAM_ID&#39; and &#39;WRITE_API_KEY</code></p>
 
 <p><code class="prettyprint">STREAM_ID</code> determines where your data will be stored. You can have any number of streams you want, for example for different stores, projects or your clients (if you provide analytics to your customers).</p>
 
 <p><code class="prettyprint">WRITE_API_KEY</code> is your authorization key related to your accunt, that allows you to send data.</p>
 
-<p>To get these keys please refer http://deep.bi/admin page.</p>
+<p>To get these keys please sign up for a deep.bi account at<a href="http://deep.bi/">deep.bi website</a>.</p>
 
 <h2 id="basic-example">Basic Example</h2>
 

@@ -1,5 +1,8 @@
 # Advanced Integration Guide
 
+<aside class="notice">After completing basic integration described at our <a href="#quick-start-guide">Quick Start Guide</a> it is now time to move on and learn about more advanced use cases of integration. Including adding tracking for custom attributes and custom events. 
+</aside>
+
 ## Tracking Custom Data
 
 DMA allows you to add custom attributes to automatically collected events or collect your own events with their custom attributes.
@@ -23,8 +26,6 @@ Examples of custom dimensions (attributes):
 * product price
 
 ## Custom Attributes
-
-Adding custom attributes to automatically collected events
 
 > Example: Add custom dimensions (attributes) to all video events
 
@@ -97,7 +98,7 @@ deep.event({
 Deep Media Analytics also allows you to collect custom events with custom attributes. To trigger DMA to register an event you can use previously defined global function deep (see Chapter 2). It takes as a parameter your data in JSON format. 
 
 <aside class="notice">
-If event.type property is not specified it defaults to “custom-event”.
+<b>Note:</b>If event.type property is not specified it will be registered with default value: <b><i>custom-event</i></b>.
 </aside>
 
 ## Custom server-side transformations
@@ -130,15 +131,19 @@ If event.type property is not specified it defaults to “custom-event”.
 
 Deep Media Analytics also allows you to specify custom transformations (see Transformation API Documentation).
 
-# Examples of Custom Data Tracking
+# Custom Data Examples
+
+<aside class="notice">
+This section covers common examples of tracking custom data.
+</aside>
 
 ## Subdomains & Mobile Domains
 
 Usually Publisher employ various types of subdomains:
 
-* special purpose, “technical” subdomains like: www.yoursite.com, ww1.yoursite.com, ww2.yoursite.com
-* subject related subdomains, e.g.: technology.yoursite.com, fashion.yoursite.com, etc.
-* mobile subdomains: m.yoursite.com
+* special purpose, “technical” subdomains like: <b>www</b>.yoursite.com, <b>ww1</b>.yoursite.com, <b>ww2</b>.yoursite.com
+* subject related subdomains, e.g.: <b>technology</b>.yoursite.com, <b>fashion</b>.yoursite.com, etc.
+* mobile subdomains: <b>m</b>.yoursite.com
 
 To track traffic from all subdomains you’ll need obviously to deploy DMA code across all pages. By default our system treats every subdomain as a separate site, however there are simple ways to reconfigure it to your convenience.
 
@@ -158,7 +163,7 @@ Does your site use query parameters for various tracking purposes, (e.g. seeing 
 
 By default, DMA is configured to use either the raw path or canonical links (when available). We strongly encourage implementing canonical links to ensure consistent tracking of pages and to prevent seeing multiple listings of the same page in the DMA Dashboard. If you're not familiar with canonical links, check out Google's Guide to Canonical Links.
 
-To utilize the canonical feature, you'll need to ensure that your site defines canonical links for each page (e.g <link rel='canonical'.../>) and that the pageCanonical option is set to true.
+To utilize the canonical feature, you'll need to ensure that your site defines canonical links for each page (e.g `<link rel='canonical'.../>`) and that the pageCanonical option is set to true.
 
 `
 deep.options.pageCanonical = true;
@@ -233,7 +238,7 @@ E.g.
 `<section id="page-info" data-section="Fashion News" data-authors="Kevin Smith">`
 
 ## Ajax & infinite scroll
-<aside class="notice">[Available in Q2 2016]</aside>
+<aside class="notice"><b>[Available in Q2 2016]</b></aside>
 
 If your site uses infinite scroll, serves up content dynamically via AJAX, or pages change without the URL subsequently changing or the DOM refreshing, you’ll need to do some additional implementation.
 
@@ -281,5 +286,5 @@ Customers who are subject to the EU e-Privacy Directive, or who would prefer not
 `deep.options.doNotTrack = true;`
 
 <aside class="notice">
-Note: By using DMA without cookies, you will be unable to see some user-related metrics.
+<b>Note</b>: By using DMA without cookies, you will be unable to see some user-related metrics.
 </aside>

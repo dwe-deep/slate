@@ -29,6 +29,8 @@ Deep Media Analytics supports:
 * HTML native audio players,
 * any other data send via REST API in JSON format.
 
+Media companies can start analyze their data just after installing the DMA scripts on their websites (usually via CMS) and setting up a few variables or they can use REST API. 
+
 The goal of this document is to assist the developer responsible for integration of Deep.BI. This document describes integration with JavaScript, but integration can be done with REST API. 
 
 The DMA JavaScript code is fully asynchronous in order to not slow down publisher’s site. Once loaded, DMA code works like most other analytics services — it triggers the loading of a beacon image, which returns a 1x1 pixel image.
@@ -46,7 +48,11 @@ The DMA JavaScript code is fully asynchronous in order to not slow down publishe
 </script>)
 ```
 
-Installing DMA JavaScript code should be as easy as pasting this snippet inside the `<head>` tag, preferably right after the opening:
+Installing DMA JavaScript code should be as easy as pasting this snippet inside the `<head>` tag, preferably right after the opening.
+
+Once this is implemented globally across your site, you might need to make a few configuration tweaks to better fit your site. All of these options are outlined in the rest of this guide.
+
+<aside class='notice'><b>Important Note:</b> Tag managers may be used to implement DMA code. However, our JavaScript must still be placed inside the <i><b>head</b></i> tag.</aside>
 
 ## Authorization
 
@@ -73,14 +79,20 @@ You must replace <code>YOUR_STREAM_KEY</code> and <code>YOUR_WRITE_KEY_KEY</code
 
 ## Sending data
 
+> Sending data script
+
 ```javascript
 <script type="text/javascript">
 deep({});
 </script>
 ```
 
-To start collecting data put the following script in the place where it should be fired:
+To start collecting data put the following script in the place where it should be fired.
 
-In most cases it can be anywhere in the <body> section of a page. The script will gather automatically pre-defined type of events - see section Events.
+In most cases it can be anywhere in the `<body>` section of a page. The script will gather automatically pre-defined type of events - see <a href="#events">Events</a> section for more details.
 
-If you’d like to gather other events you should put additional, custom lines of the script in a place where these events occur adding to it some custom parameters. For more details see section Advanced Integration Guide.
+If you’d like to gather other events you should put additional, custom lines of the script in a place where these events occur adding to it some custom parameters. For more details see our <a href="#advanced-integration-guide">Advanced Integration Guide</a>.
+
+<aside class="success">
+That's it! Basic integration with DeepBI is now completed.
+</aside>
