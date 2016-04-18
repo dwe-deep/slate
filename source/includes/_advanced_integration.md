@@ -1,6 +1,6 @@
 # Advanced Integration Guide
 
-## Tracking Custom Events
+## Tracking Custom Data
 
 DMA allows you to add custom attributes to automatically collected events or collect your own events with their custom attributes.
 Examples of custom events:
@@ -22,7 +22,9 @@ Examples of custom dimensions (attributes):
 * product name
 * product price
 
-### Adding custom attributes to automatically collected events
+## Custom Attributes
+
+Adding custom attributes to automatically collected events
 
 > Example: Add custom dimensions (attributes) to all video events
 
@@ -49,7 +51,7 @@ Please remember, that the custom attribute will be added to all automatically co
 </aside>
 
 
-## Collecting custom events with custom attributes
+## Custom Events
 
 > Example: Register an event when an ad has been watched
 
@@ -57,17 +59,22 @@ Please remember, that the custom attribute will be added to all automatically co
 deep.event({"event.type": "ad-watched"});
 ```
 
+> Registered data:
+
+```
+event.type: "ad-watched"
+event.timestamp: exact time of an event
+```
+
 > Example: Register user sign up event
 
 ```javascript
 deep.event({"event.type": "signup", "user.id.email": "john.doe@yahoo.com"}}});
-
-> OR
-
+OR
 deep.event({event: {type: "signup"}, user: {id: {email: "john.doe@yahoo.com"}}});
 ```
 
-> Example result:
+> Registered data:
 
 ```
 event.type: "signup"
@@ -89,20 +96,9 @@ deep.event({
 
 Deep Media Analytics also allows you to collect custom events with custom attributes. To trigger DMA to register an event you can use previously defined global function deep (see Chapter 2). It takes as a parameter your data in JSON format. 
 
-As a result you’ll see in your analytics this data:
-
-`
-event.type: "ad-watched"
-event.timestamp: exact time of an event
-`
-
-As a result you’ll see in your analytics this data:
-
-
-
-
-
+<aside class="notice">
 If event.type property is not specified it defaults to “custom-event”.
+</aside>
 
 ## Custom server-side transformations
 

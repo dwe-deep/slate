@@ -2,7 +2,7 @@
 title: Developer Guide
 
 language_tabs:
-  - javascript
+  - code
 
 toc_footers:
   - <a href='http://www.deep.bi/'>Sign Up for a DeepBI account</a>
@@ -12,6 +12,7 @@ includes:
   - advanced_integration
   - events
   - data_attributes
+  - ingestion_api
 
 search: true
 ---
@@ -49,6 +50,14 @@ Installing DMA JavaScript code should be as easy as pasting this snippet inside 
 
 ## Authorization
 
+> Set global variable with authorization keys:
+
+```javascript
+<script type="text/javascript">
+var deep = DeepTrack.track("YOUR_STREAM_KEY", "YOUR_WRITE_KEY");
+</script>
+```
+
 To send data you need to obtain two authorization keys:
 
 * Stream ID
@@ -58,23 +67,11 @@ You can set a global variable containing your authorization keys or send them ev
 
 For the first option put an authorization snippet below the main loading script.
 
-```javascript
-<script type="text/javascript">
-var deep = DeepTrack.track("YOUR_STREAM_KEY", "YOUR_WRITE_KEY");
-</script>
-```
-
 <aside class="notice">
 You must replace <code>YOUR_STREAM_KEY</code> and <code>YOUR_WRITE_KEY_KEY</code> with your account credentials.
 </aside>
 
 ## Sending data
-
-To start collecting data put the following script in the place where it should be fired:
-
-In most cases it can be anywhere in the <body> section of a page. The script will gather automatically pre-defined type of events - see Section 3.
-
-If you’d like to gather other events you should put additional, custom lines of the script in a place where these events occur adding to it some custom parameters. For more details see Section 5.
 
 ```javascript
 <script type="text/javascript">
@@ -82,3 +79,8 @@ deep({});
 </script>
 ```
 
+To start collecting data put the following script in the place where it should be fired:
+
+In most cases it can be anywhere in the <body> section of a page. The script will gather automatically pre-defined type of events - see section Events.
+
+If you’d like to gather other events you should put additional, custom lines of the script in a place where these events occur adding to it some custom parameters. For more details see section Advanced Integration Guide.
